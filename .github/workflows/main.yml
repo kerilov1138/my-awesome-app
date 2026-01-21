@@ -13,7 +13,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Gradle 8.4 Kurulumu (Sistemdeki 9.x sürümünü bypass eder)
+      # Gradle 8.4 Kurulumu
       - name: Setup Gradle
         if: hashFiles('**/pubspec.yaml') == ''
         uses: gradle/actions/setup-gradle@v3
