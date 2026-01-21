@@ -36,6 +36,8 @@ jobs:
             ./gradlew assembleDebug --no-daemon
           else
             echo "Gradle Wrapper bulunamadı! Sistem Gradle'ı kullanılıyor..."
+            # Sistem gradle'ı kullanılırken repo tanımları settings.gradle'da olduğu için 
+            # plugin'lerin bulunamaması sorunu çözülmüş olmalı.
             gradle assembleDebug --no-daemon
           fi
 
