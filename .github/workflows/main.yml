@@ -26,20 +26,17 @@ jobs:
           flutter pub get
           flutter build apk --release
 
-      # Native/Web Android derlemesi - gradlew yoksa sistem gradle'ını kullan
+      # Android derlemesi - Gradle 8.4 Wrapper kullanımı
       - name: Android Build (Gradle)
         if: hashFiles('**/pubspec.yaml') == ''
         run: |
-          if [ -f gradlew ]; then
-            echo "Gradle Wrapper bulundu, kullanılıyor..."
-            chmod +x gradlew
-            ./gradlew assembleDebug --no-daemon
-          else
-            echo "Gradle Wrapper bulunamadı! Sistem Gradle'ı kullanılıyor..."
-            # Sistem gradle'ı kullanılırken repo tanımları settings.gradle'da olduğu için 
-            # plugin'lerin bulunamaması sorunu çözülmüş olmalı.
-            gradle assembleDebug --no-daemon
+          # Eğer gradlew yoksa gradle wrapper komutu ile oluşturmayı dene (Sistem gradle 9 olsa da wrapper 8.4 oluşturur)
+          if [ ! -f gradlew ]; then
+            echo "Gradle Wrapper oluşturuluyor..."
+            gradle wrapper --gradle-version 8.4
           fi
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
