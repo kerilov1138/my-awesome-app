@@ -6,38 +6,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      # Gradle 8.4 Kurulumu
       - name: Setup Gradle
         if: hashFiles('**/pubspec.yaml') == ''
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.4
-
-      # Flutter tespiti ve derlemesi
       - name: Setup Flutter
         if: hashFiles('**/pubspec.yaml') != ''
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          
       - name: Flutter Build
         if: hashFiles('**/pubspec.yaml') != ''
         run: |
           flutter pub get
           flutter build apk --release
-
-      # Android derlemesi
       - name: Android Build
         if: hashFiles('**/pubspec.yaml') == ''
         run: gradle assembleDebug --no-daemon
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
