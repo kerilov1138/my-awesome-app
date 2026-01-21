@@ -1,0 +1,5 @@
+{
+  "name": "Finans - Banka ve Taksit Takip Uygulaması",
+  "description": "Türkiye'deki bankalar için kredi kartı taksitlerini, hesap kesim tarihlerini ve aylık ödemeleri takip eden finansal yönetim uygulaması.",
+  "requestFramePermissions": []
+}
