@@ -26,17 +26,24 @@ jobs:
           flutter pub get
           flutter build apk --release
 
-      # Native/Web Android derlemesi
+      # Native/Web Android derlemesi - gradlew yoksa sistem gradle'ını kullan
       - name: Android Build (Gradle)
         if: hashFiles('**/pubspec.yaml') == ''
         run: |
-          chmod +x gradlew || true
-          ./gradlew assembleDebug --no-daemon
+          if [ -f gradlew ]; then
+            echo "Gradle Wrapper bulundu, kullanılıyor..."
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon
+          else
+            echo "Gradle Wrapper bulunamadı! Sistem Gradle'ı kullanılıyor..."
+            gradle assembleDebug --no-daemon
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: My-Awesome-App-APK
           path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            build/app/outputs/flutter-apk/app-release.apk
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
+            build/app/outputs/flutter-apk/*.apk
