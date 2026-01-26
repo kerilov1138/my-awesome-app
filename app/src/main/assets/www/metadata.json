@@ -1,5 +1,5 @@
 {
-  "name": "Finans - Banka ve Taksit Takip Uygulaması",
-  "description": "Türkiye'deki bankalar için kredi kartı taksitlerini, hesap kesim tarihlerini ve aylık ödemeleri takip eden finansal yönetim uygulaması.",
+  "name": "İnşaat Maliyet Hesaplayıcı",
+  "description": "Toplam inşaat alanına ve temel tipine göre kaba inşaat metrajlarını ve maliyetlerini hesaplayan profesyonel bir araç.",
   "requestFramePermissions": []
 }
