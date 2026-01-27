@@ -7,9 +7,12 @@ import androidx.webkit.WebViewAssetLoader.AssetsPathHandler
 import androidx.webkit.WebViewClientCompat
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var webView: WebView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val webView = WebView(this)
+        
+        webView = WebView(this)
         
         // Modern WebView Ayarları
         webView.settings.apply {
@@ -34,14 +37,16 @@ class MainActivity : AppCompatActivity() {
                 view: WebView,
                 request: WebResourceRequest
             ): WebResourceResponse? {
+                // Asset Loader isteği yakalar ve yerel assets/www klasörüne yönlendirir
                 return assetLoader.shouldInterceptRequest(request.url)
             }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-            }
-
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            override fun onReceivedError(
+                view: WebView,
+                request: WebResourceRequest,
+                error: WebResourceError
+            ) {
+                // Hata durumunda log basılabilir veya kullanıcıya bilgi verilebilir
                 super.onReceivedError(view, request, error)
             }
         }
@@ -49,23 +54,17 @@ class MainActivity : AppCompatActivity() {
         webView.webChromeClient = WebChromeClient()
         
         // Dosyaları sanal domain üzerinden yükle (Pathing sorunlarını çözer)
+        // https://appassets.androidplatform.net/assets/www/ yolu Android Assets klasörüne eşlenir
         webView.loadUrl("https://appassets.androidplatform.net/assets/www/index.html")
+        
         setContentView(webView)
     }
 
     override fun onBackPressed() {
-        // WebView içinde geri gitme desteği
-        val webView = contentView as? WebView
-        if (webView?.canGoBack() == true) {
+        if (::webView.isInitialized && webView.canGoBack()) {
             webView.goBack()
         } else {
             super.onBackPressed()
         }
-    }
-    
-    private var contentView: android.view.View? = null
-    override fun setContentView(view: android.view.View?) {
-        super.setContentView(view)
-        contentView = view
     }
 }
