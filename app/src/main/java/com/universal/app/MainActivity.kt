@@ -22,30 +22,23 @@ class MainActivity : AppCompatActivity() {
             loadWithOverviewMode = true
             useWideViewPort = true
             javaScriptCanOpenWindowsAutomatically = true
+            mediaPlaybackRequiresUserGesture = false
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
+        // Sanal sunucu ayarları: Beyaz ekran sorununu çözen asıl kısım burasıdır.
+        // Bu yapı sayesinde 'index.html' içindeki '/assets/...' gibi yollar bozulmadan çalışır.
         val assetLoader = WebViewAssetLoader.Builder()
             .addPathHandler("/assets/", AssetsPathHandler(this))
             .build()
 
-        // WebViewClientCompat yerine standart WebViewClient kullanarak 'final' hatasını çözüyoruz
         webView.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(
                 view: WebView,
                 request: WebResourceRequest
             ): WebResourceResponse? {
+                // İstekleri yakalar ve assets/www içindeki dosyalara yönlendirir
                 return assetLoader.shouldInterceptRequest(request.url)
-            }
-
-            @Deprecated("Deprecated for API 23+")
-            override fun onReceivedError(
-                view: WebView,
-                errorCode: Int,
-                description: String,
-                failingUrl: String
-            ) {
-                super.onReceivedError(view, errorCode, description, failingUrl)
             }
 
             override fun onReceivedError(
@@ -53,13 +46,15 @@ class MainActivity : AppCompatActivity() {
                 request: WebResourceRequest,
                 error: WebResourceError
             ) {
+                // Hataları kontrol etmek için burası kullanılabilir
                 super.onReceivedError(view, request, error)
             }
         }
 
         webView.webChromeClient = WebChromeClient()
         
-        // Sanal URL üzerinden yükleme yaparak beyaz ekranı (relative paths) çözüyoruz
+        // Uygulamayı güvenli bir HTTPS domaini üzerinden yüklüyoruz.
+        // Bu sayede modern JS kütüphaneleri (React/Vue) hata vermez.
         webView.loadUrl("https://appassets.androidplatform.net/assets/www/index.html")
         
         setContentView(webView)
