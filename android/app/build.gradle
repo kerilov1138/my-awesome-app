@@ -8,7 +8,6 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    // Fallback for CI environments
     flutterRoot = System.getenv('FLUTTER_ROOT')
 }
 
