@@ -1,39 +1,20 @@
-
-name: Universal APK Builder
-on: [push, workflow_dispatch]
+name: Build Flutter APK
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: subosito/flutter-action@v2
         with:
-          java-version: '17'
-          distribution: 'temurin'
-      - name: Setup Gradle
-        if: hashFiles('**/pubspec.yaml') == ''
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.4
-      - name: Setup Flutter
-        if: hashFiles('**/pubspec.yaml') != ''
-        uses: subosito/flutter-action@v2
-        with:
+          flutter-version: '3.16.0'
           channel: 'stable'
-      - name: Flutter Build
-        if: hashFiles('**/pubspec.yaml') != ''
-        run: |
-          flutter pub get
-          flutter build apk --release
-      - name: Android Build
-        if: hashFiles('**/pubspec.yaml') == ''
-        run: gradle assembleDebug --no-daemon
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build APK
+        run: flutter build apk --debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: My-Awesome-App-APK
-          path: |
-            app/build/outputs/apk/debug/*.apk
-            app/build/outputs/apk/release/*.apk
-            build/app/outputs/flutter-apk/*.apk
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-debug.apk
